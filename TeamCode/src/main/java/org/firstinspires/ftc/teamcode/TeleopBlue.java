@@ -22,14 +22,18 @@ public class TeleopBlue extends LinearOpMode {
     GoBildaPinpointDriver pinpoint;
     DcMotor leftFront, leftBack, rightFront, rightBack;
     DcMotor intakeMotor, transferMotor;
-    DcMotorEx shooterMotor1, shooterMotor2;
-    Servo hood, flowerIntake1, flowerIntake2, funnel1;
+    DcMotorEx shooterMotorNectar, shooterMotorPollen;
+    Servo hood, intakeLift, flowerIntake1, flowerIntake2, funnel1;
     CRServo turret1, turret2;
     DcMotorEx turretEncoder;
 
-    double highVelocity = 2000;
-    double mediumVelocity = 1500;
-    double lowVelocity = 1000;
+    double hvNectar = 2000;
+    double mvNectar = 1500;
+    double lvNectar = 1000;
+
+    double hvPollen = 2000;
+    double mvPollen = 1500;
+    double lvPollen = 1000;
 
     Boolean manualTargeting = true;
     Pose2D goal;
@@ -49,8 +53,8 @@ public class TeleopBlue extends LinearOpMode {
         rightFront = hardwareMap.get(DcMotor.class, "rightFront");
         rightBack = hardwareMap.get(DcMotor.class, "rightBack");
 
-        shooterMotor1 = hardwareMap.get(DcMotorEx.class, "shooterMotor1");
-        shooterMotor2 = hardwareMap.get(DcMotorEx.class, "shooterMotor2");
+        shooterMotorNectar = hardwareMap.get(DcMotorEx.class, "shooterMotorNectar");
+        shooterMotorPollen = hardwareMap.get(DcMotorEx.class, "shooterMotorPollen");
         funnel1 = hardwareMap.get(Servo.class, "funnel1");
         hood = hardwareMap.get(Servo.class, "hood");
 
@@ -58,6 +62,7 @@ public class TeleopBlue extends LinearOpMode {
         turret2 = hardwareMap.get(CRServo.class, "turret2");
         turretEncoder = hardwareMap.get(DcMotorEx.class, "turretEncoder");
 
+        intakeLift = hardwareMap.get(Servo.class, "intakeLift");
         intakeMotor = hardwareMap.get(DcMotor.class, "intakeMotor");
         transferMotor = hardwareMap.get(DcMotor.class, "transferMotor");
         flowerIntake1 = hardwareMap.get(Servo.class, "flowerIntake1");
@@ -66,13 +71,12 @@ public class TeleopBlue extends LinearOpMode {
         leftFront.setDirection(DcMotor.Direction.REVERSE);
         leftBack.setDirection(DcMotor.Direction.REVERSE);
 
-        shooterMotor2.setDirection(DcMotorEx.Direction.REVERSE);
-        shooterMotor1.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
-        shooterMotor2.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
+        shooterMotorNectar.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
+        shooterMotorPollen.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
 
         //PIDFCoefficients pidfCoefficients = new PIDFCoefficients(0, 0, 0, 0);
-        //shooterMotor2.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, pidfCoefficients);
-        //shooterMotor2.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, pidfCoefficients);
+        //shooterMotorNectar.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, pidfCoefficients);
+        //shooterMotorPollen.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, pidfCoefficients);
 
 
 
@@ -86,6 +90,14 @@ public class TeleopBlue extends LinearOpMode {
             aimTurret();
             //firingSolution();
             manualShooter();
+
+            if(gamepad2.right_trigger < 0.5){
+                intakeLift.setPosition(1);
+            } else {
+                intakeLift.setPosition(0);
+            }
+
+
 
         }
 
@@ -120,23 +132,23 @@ public class TeleopBlue extends LinearOpMode {
         if (manualTargeting) {
 
             if (gamepad2.a) {
-                shooterMotor1.setVelocity(lowVelocity);
-                shooterMotor2.setVelocity(lowVelocity);
+                shooterMotorNectar.setVelocity(lvNectar);
+                shooterMotorPollen.setVelocity(lvPollen);
             }
 
             if (gamepad2.b) {
-                shooterMotor1.setVelocity(mediumVelocity);
-                shooterMotor2.setVelocity(mediumVelocity);
+                shooterMotorNectar.setVelocity(mvNectar);
+                shooterMotorPollen.setVelocity(mvPollen);
             }
 
             if (gamepad2.x) {
-                shooterMotor1.setVelocity(highVelocity);
-                shooterMotor2.setVelocity(highVelocity);
+                shooterMotorNectar.setVelocity(hvNectar);
+                shooterMotorPollen.setVelocity(hvPollen);
             }
 
             if (gamepad2.y) {
-                shooterMotor1.setVelocity(0);
-                shooterMotor2.setVelocity(0);
+                shooterMotorNectar.setVelocity(hvNectar);
+                shooterMotorPollen.setVelocity(hvPollen);
             }
         }
     }
